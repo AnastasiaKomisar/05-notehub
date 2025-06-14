@@ -22,7 +22,7 @@ export default function App() {
     isError,
   } = useQuery({
     queryKey: ['notes', page, trimmedSearch],
-    queryFn: () => fetchNotes(trimmedSearch || undefined, page),
+    queryFn: () => fetchNotes(trimmedSearch, page),
     placeholderData: keepPreviousData,
     enabled: true,
   });
