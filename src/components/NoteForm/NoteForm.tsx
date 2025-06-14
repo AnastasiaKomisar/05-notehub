@@ -36,15 +36,18 @@ export default function NoteForm({ onClose }: NoteFormProps) {
     <Formik
       initialValues={{ title: '', content: '', tag: 'Todo' }}
       validationSchema={validationSchema}
-      onSubmit={(values, actions) => {
+      onSubmit={(values, { setSubmitting }) => {
         mutation.mutate({
             ...values,
             tag: values.tag as NewNote['tag'], 
-        }); 
-        actions.setSubmitting(false);
+        },
+        {
+          onSettled: () => setSubmitting(false)
+        },
+      );
     }}
     >
-
+  {({ isSubmitting }) => (
     <Form className={css.form}>
         <div className={css.formGroup}>
             <label htmlFor="title" className={css.label}>Title</label>
@@ -54,7 +57,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
 
         <div className={css.formGroup}>
             <label htmlFor="content" className={css.label}>Content</label>
-            <Field id="content" name="content" as="textarea" rows="8" className={css.textarea} />
+            <Field id="content" name="content" as="textarea" rows={8} className={css.textarea} />
             <ErrorMessage name="content" component="span" className={css.error} />       
         </div>
 
@@ -71,14 +74,15 @@ export default function NoteForm({ onClose }: NoteFormProps) {
         </div>
 
         <div className={css.actions}>
-          <button type="submit" className={css.submitButton}  disabled={false}>
+          <button type="submit" className={css.submitButton}  disabled={isSubmitting}>
             Create note
           </button>
-          <button type="button" onClick={onClose} className={css.cancelButton}>
+          <button type="button" onClick={onClose} className={css.cancelButton} disabled={isSubmitting}>
             Cancel
           </button>
         </div>
       </Form>
+  )}
     </Formik>
   );
 };
